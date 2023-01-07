@@ -10,16 +10,183 @@
     <div id="records"></div>
     <button id="add-button">Add Record</button>
     <form id="add-form" style="display:none;">
-      <label for="name">Name:</label><br>
-      <input type="text" id="name" name="name"><br>
-      <label for="email">Email:</label><br>
-      <input type="text" id="email" name="email"><br>
-      <label for="phone">Phone:</label><br>
-      <input type="text" id="phone" name="phone"><br>
-      <label for="address">Address:</label><br>
-      <input type="text" id="address" name="address"><br><br>
-      <button type="submit" id="submit-button">Submit</button>
-      <button type="button" id="cancel-button">Cancel</button>
+        <label for="forename">First Name:</label><br>
+        <input type="text" id="forename" name="forename"><br>
+        <label for="surname">Last Name:</label><br>
+        <input type="text" id="surname" name="surname"><br>
+        <label for="phone">Phone:</label><br>
+        <input type="text" id="phone" name="phone"><br>
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+        <button type="submit" id="submit-button">Submit</button>
+        <button type="button" id="cancel-button">Cancel</button>
     </form>
+    <script>
+      // Declare a global variable to store the data
+        let records = [];
+
+        // Load the data from the JSON file when the page loads
+        window.onload = () => {
+            fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                records = data;
+                displayRecords();
+            });
+        };
+
+        // Function to display the records on the page
+        const displayRecords = () => {
+            // Clear the records element
+            const recordsElement = document.querySelector('#records');
+            recordsElement.innerHTML = '';
+
+            // Loop through the records and create a div for each one
+            for (const record of records) {
+            const recordElement = document.createElement('div');
+            recordElement.classList.add('record');
+
+            // Add the name, email, phone, and address to the record element
+            const forenameElement = document.createElement('p');
+            forenameElement.textContent = record.forename;
+            recordElement.appendChild(forenameElement);
+
+            const surnameElement = document.createElement('p');
+            surnameElement.textContent = record.surname;
+            recordElement.appendChild(surnameElement);
+
+            const phoneElement = document.createElement('p');
+            phoneElement.textContent = record.phone;
+            recordElement.appendChild(phoneElement);
+
+            const emailElement = document.createElement('p');
+            emailElement.textContent = record.email;
+            recordElement.appendChild(emailElement);
+
+            // Add an "Edit" button to the record element
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => {
+                editRecord(record.id);
+            });
+            recordElement.appendChild(editButton);
+
+            // Add a "Delete" button to the record element
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => {
+                deleteRecord(record.id);
+            });
+            recordElement.appendChild(deleteButton);
+
+            // Add the record element to the records element
+            recordsElement.appendChild(recordElement);
+            }
+        };
+
+        // Function to show the "Add Record" form
+        const showAddForm = () => {
+            const addForm = document.querySelector('#add-form');
+            addForm.style.display = 'flex';
+        };
+
+        // Function to hide the "Add Record" form
+        const hideAddForm = () => {
+            const addForm = document.querySelector('#add-form');
+            addForm.style.display = 'none';
+        };
+
+        // Function to handle the "Add Record" form submission
+        const addRecord = event => {
+            event.preventDefault();
+
+            // Get the values from the form inputs
+            const forename = document.querySelector('#forename').value;
+            const surname = document.querySelector('#surname').value;
+            const phone = document.querySelector('#phone').value;
+            const email = document.querySelector('#email').value;
+
+            // Create a new record object
+            const newRecord = {
+              id: Date.now(),
+              forename: forename,
+              surname: surname,
+              phone: phone,
+              email: email
+            };
+
+            // Add the new record to the records array
+            records.push(newRecord);
+
+            // Save the records to the JSON file
+            saveRecords();
+
+            // Clear the form inputs
+            document.querySelector('#forename').value = '';
+            document.querySelector('#surname').value = '';
+            document.querySelector('#phone').value = '';
+            document.querySelector('#email').value = '';
+
+            // Hide the "Add Record" form
+            hideAddForm();
+
+            // Display the updated records on the page
+            displayRecords();
+          };
+
+          // Function to edit a record
+          const editRecord = id => {
+            // Find the record to edit
+            const recordToEdit = records.find(record => record.id === id);
+
+            // If the record was found, update its values
+            if (recordToEdit) {
+              recordToEdit.forename = prompt('Enter a new first name:', recordToEdit.forename);
+              recordToEdit.surname = prompt('Enter a new surname:', recordToEdit.surname);
+              recordToEdit.phone = prompt('Enter a new phone:', recordToEdit.phone);
+              recordToEdit.email = prompt('Enter a new email:', recordToEdit.email);
+            }
+
+            // Save the updated records to the JSON file
+            saveRecords();
+
+            // Display the updated records on the page
+            displayRecords();
+          };
+
+          // Function to delete a record
+          const deleteRecord = id => {
+            // Find the index of the record to delete
+            const index = records.findIndex(record => record.id === id);
+
+            // If the record was found, remove it from the records array
+            if (index !== -1) {
+              records.splice(index, 1);
+            }
+
+            // Save the updated records to the JSON file
+            saveRecords();
+
+            // Display the updated records on the page
+            displayRecords();
+          };
+
+          // Function to save the records to the JSON file
+          const saveRecords = () => {
+            // Convert the records array to a JSON string
+            const recordsJson = JSON.stringify(records);
+
+            // Save the records to the JSON file
+            fetch('data.json', {
+              method: 'POST',
+              body: recordsJson
+            });
+          };
+
+          // Add event listeners to the "Add Record" button and form
+          document.querySelector('#add-button').addEventListener('click', showAddForm);
+          document.querySelector('#add-form').addEventListener('submit', addRecord);
+          document.querySelector('#cancel-button').addEventListener('click', hideAddForm);
+    </script>
 </body>
 </html>
