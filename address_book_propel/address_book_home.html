@@ -4,23 +4,44 @@
 <head>
     <meta charset="utf-8" />
     <title>Propel Address Book</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Address Book</h1>
-    <div id="records"></div>
-    <button id="add-button">Add Record</button>
-    <form id="add-form" style="display:none;">
-        <label for="forename">First Name:</label><br>
-        <input type="text" id="forename" name="forename"><br>
-        <label for="surname">Last Name:</label><br>
-        <input type="text" id="surname" name="surname"><br>
-        <label for="phone">Phone:</label><br>
-        <input type="text" id="phone" name="phone"><br>
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-        <button type="submit" id="submit-button">Submit</button>
-        <button type="button" id="cancel-button">Cancel</button>
-    </form>
+    <div class="container mt-5">
+    <h1 class="text-center mb-5">Address Book</h1>
+    <div id="records" class="row"></div>
+    <div class="d-flex justify-content-center mt-5">
+      <button id="add-button" class="btn btn-primary">Add Record</button>
+    </div>
+        <form id="add-form" class="card mt-5" style="display:none;">
+        <div class="card-header">
+            Add Record
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="forename">First Name:</label><br>
+                <input type="text" class="form-control" id="forename" name="forename"><br>
+            </div>
+            <div class="form-group">
+                <label for="surname">Last Name:</label><br>
+                <input type="text" class="form-control" id="surname" name="surname"><br>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label><br>
+                <input type="text" class="form-control" id="phone" name="phone"><br>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label><br>
+                <input type="text" class="form-control" id="email" name="email"><br>
+            </div>
+                <button type="submit" class="btn btn-success" id="submit-button">Submit</button>
+                <button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" 
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script>
       // Declare a global variable to store the data
         let records = [];
