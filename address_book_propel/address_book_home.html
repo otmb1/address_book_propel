@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -10,6 +10,11 @@
         background-color: lightblue;
         font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
       }
+      .record-element {
+        border: 1px solid black;
+        padding: 10px;
+        background-color: #f5f5f5;
+      }
     </style>
 </head>
 <body>
@@ -20,7 +25,7 @@
     <div class="d-flex justify-content-center mt-5">
       <button id="add-button" class="btn btn-primary">Add Record</button>
     </div>
-        <form id="add-form" class="card mt-5" style="display:none;">
+        <form action="save-records.php" method="post" id="add-form" class="card mt-5" style="display:none;">
         <div class="card-header">
             Add Record
         </div>
@@ -71,6 +76,7 @@
             // Loop through the records and create a div for each one
             for (const record of records) {
             const recordElement = document.createElement('div');
+            recordElement.className = "record-element";
             recordElement.classList.add('record');
 
             // Add the name, email, phone, and address to the record element
@@ -109,6 +115,10 @@
             // Add the record element to the records element
             recordsElement.appendChild(recordElement);
             }
+
+            // Add a line break element
+            const lineBreakElement = document.createElement('br');
+            recordsElement.appendChild(lineBreakElement);
         };
 
         // Function to show the "Add Record" form
@@ -124,42 +134,41 @@
         };
 
         // Function to handle the "Add Record" form submission
-        const addRecord = event => {
-            event.preventDefault();
+        const addRecord = () => {
+          // Get the form data
+          const forename = document.querySelector('#forename').value;
+          const surname = document.querySelector('#surname').value;
+          const phone = document.querySelector('#phone').value;
+          const email = document.querySelector('#email').value;
 
-            // Get the values from the form inputs
-            const forename = document.querySelector('#forename').value;
-            const surname = document.querySelector('#surname').value;
-            const phone = document.querySelector('#phone').value;
-            const email = document.querySelector('#email').value;
-
-            // Create a new record object
-            const newRecord = {
-              id: Date.now(),
-              forename: forename,
-              surname: surname,
-              phone: phone,
-              email: email
-            };
-
-            // Add the new record to the records array
-            records.push(newRecord);
-
-            // Save the records to the JSON file
-            saveRecords();
-
-            // Clear the form inputs
-            document.querySelector('#forename').value = '';
-            document.querySelector('#surname').value = '';
-            document.querySelector('#phone').value = '';
-            document.querySelector('#email').value = '';
-
-            // Hide the "Add Record" form
-            hideAddForm();
-
-            // Display the updated records on the page
-            displayRecords();
+          // Create a new record object with the form data
+          const newRecord = {
+            forename,
+            surname,
+            phone,
+            email,
           };
+
+          // Send a POST request to the save-records.php script with the form data
+          fetch('save-records.php', {
+            method: 'POST',
+            body: JSON.stringify(newRecord),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then(response => response.text())
+            .then(data => {
+              // Display the response from the server
+              alert(data);
+            });
+        };
+
+        // Add an event listener to the submit button to send the form data to the server
+        const submitButton = document.querySelector('#submit-button');
+        submitButton.addEventListener('click', event => {
+          event.preventDefault();
+          addRecord();
+        });
 
           // Function to edit a record
           const editRecord = id => {
